@@ -16,6 +16,10 @@ help:
 	@printf "$(CYAN)%-30b$(END) %b\n" "help:" "Shows this message."
 	@printf "$(CYAN)%-30b$(END) %b\n" "install-dev:" "Install the dev dependencies."
 
+
+###########################################################
+# DEV
+
 install-dev:
 	pip install -r requirements.dev.txt
 run-dev:
@@ -24,3 +28,26 @@ run-dev:
 dev:
 	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
 	docker exec -it consultant_api python main.py
+
+###########################################################
+# PROD
+
+act:
+	act --container-architecture linux/amd64 --secret-file .secrets --var-file .vars
+install-prod:
+	pip install -t ./deps -r requirements.txt
+zip:
+	cd deps && zip ../lambda_function.zip -r .
+	cd consultant && zip ../lambda_function.zip -u ./*
+
+
+###########################################################
+# TERRAFORM
+tf-init:
+	cd terraform && $(MAKE) init
+tf-plan:
+	cd terraform && $(MAKE) plan
+tf-apply:
+	cd terraform && $(MAKE) apply
+tf-apply-dev:
+	cd terraform && $(MAKE) apply-dev

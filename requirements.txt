@@ -1,0 +1,4 @@
+mangum
+fastapi==0.99.0
+urllib3==1.26.6
+requests>=2.25.0,<2.26.0
