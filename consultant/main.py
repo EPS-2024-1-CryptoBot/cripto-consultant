@@ -1,31 +1,28 @@
 import logging
 
-from binance_futures import write_log
+import binance_futures
+import bitmex
 from fastapi import FastAPI
 from mangum import Mangum
 
 app = FastAPI()
 handler = Mangum(app)
 
-# Create and configure the logger object
-
 logger = logging.getLogger()
 
-logger.setLevel(logging.DEBUG)  # Overall minimum logging level
+logger.setLevel(logging.DEBUG)
 
-stream_handler = logging.StreamHandler()  # Configure the logging messages displayed in the Terminal
+stream_handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(levelname)s :: %(message)s')
 stream_handler.setFormatter(formatter)
-stream_handler.setLevel(logging.INFO)  # Minimum logging level for the StreamHandler
+stream_handler.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler('info.log')  # Configure the logging messages written to a file
+file_handler = logging.FileHandler('info.log')
 file_handler.setFormatter(formatter)
-file_handler.setLevel(logging.DEBUG)  # Minimum logging level for the FileHandler
+file_handler.setLevel(logging.DEBUG)
 
 logger.addHandler(stream_handler)
 logger.addHandler(file_handler)
-
-write_log()
 
 @app.get("/")
 def read_root():
@@ -33,6 +30,20 @@ def read_root():
     This is the root path of the API
     """
     return {"ConsultantAPI": "CryptoBot_UnB_2024.1"}
+
+@app.get("/cryptobot/contracts/list/bitmex")
+def get_contracts_list_bitmex():
+    """
+    Get all the active contracts from Bitmex
+    """
+    return bitmex.get_contracts()
+
+@app.get("/cryptobot/contracts/list/binance")
+def get_contracts_list_binance():
+    """
+    Get all the contracts from Binance Futures
+    """
+    return binance_futures.get_contracts()
 
 if __name__ == "__main__":
     import uvicorn
