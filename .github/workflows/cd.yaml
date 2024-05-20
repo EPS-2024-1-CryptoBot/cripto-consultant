@@ -10,6 +10,8 @@ env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  COIN_GECKO_API_KEY: ${{ secrets.COIN_GECKO_API_KEY }}
+  COIN_GECKO_API_URL: ${{ secrets.COIN_GECKO_API_URL }}
 
 jobs:
   deploy:
@@ -48,6 +50,8 @@ jobs:
       - name: Deploy
         env:
             TF_VAR_environment: prod
+            TF_VAR_COIN_GECKO_API_KEY: ${{ env.COIN_GECKO_API_KEY }}
+            TF_VAR_COIN_GECKO_API_URL: ${{ env.COIN_GECKO_API_URL }}
         run: |
           make tf-init
           make tf-apply
