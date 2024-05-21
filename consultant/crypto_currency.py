@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 import coin_gecko
 
 router = APIRouter()
-default_list_of_coins = ["bitcoin", "ethereum", "cardano", "solana", "binancecoin", "terra-luna", "ripple", "dogecoin", "shiba-inu"]
+default_list_of_coins = ["bitcoin", "ethereum", "cardano", "solana", "binancecoin", "ripple", "dogecoin"]
 
 def is_valid_coin(coin_id):
     return coin_id in default_list_of_coins
@@ -35,7 +35,7 @@ def get_crypto_currency_coin(coin_id: str):
     """
     if not is_valid_coin(coin_id):
         raise HTTPException(status_code=404, detail="Coin not found")
-
+    
     return coin_gecko.get_coin_simple_price(coin_id)
 
 @router.get("/coins/{coin_id}/chart", tags=["Crypto Currency"])
@@ -46,3 +46,15 @@ def get_crypto_currency_coin_chart(coin_id: str):
     if not is_valid_coin(coin_id):
         raise HTTPException(status_code=404, detail="Coin not found")
     return coin_gecko.get_coin_chart_data_with_timestamp(coin_id)
+
+@router.get("/coins-summary", tags=["Crypto Currency"])
+def get_crypto_currency_coins_summary():
+    """
+    Path to get the summary of the coins from CoinGecko
+    """
+    coins = ""
+    for coin in default_list_of_coins:
+        coins += coin + ","
+    coins = coins[:-1]
+
+    return coin_gecko.get_coin_simple_price(coins)

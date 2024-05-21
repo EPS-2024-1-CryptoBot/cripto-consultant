@@ -7,7 +7,7 @@ https://docs.coingecko.com/v3.0.1/reference/introduction
 """
 
 def build_gecko_request(method, endpoint, params=None):
-    url = os.environ.get("COIN_GECKO_API_URL") + endpoint
+    url = os.environ.get("COIN_GECKO_API_URL") + "/" + endpoint
 
     headers = {
         "accept": "application/json",
