@@ -27,28 +27,28 @@ logger.addHandler(stream_handler)
 logger.addHandler(file_handler)
 
 
-@app.get("/")
+@app.get("/", tags=["Root"])
 def read_root():
     """
     This is the root path of the API
     """
     return {"ConsultantAPI": "CryptoBot_UnB_2024.1"}
 
-@app.get("/cryptobot/contracts/bitmex")
+@app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
 def get_contracts_list_bitmex():
     """
     Get all the active contracts from Bitmex
     """
     return connectors.bitmex.get_contracts()
 
-@app.get("/cryptobot/contracts/binance")
+@app.get("/cryptobot/contracts/binance", tags=["Binance"])
 def get_contracts_list_binance():
     """
     Get all the contracts from Binance
     """
     return binance.get_contracts()
 
-@app.get("/cryptobot/candlesticks/binance")
+@app.get("/cryptobot/candlesticks/binance", tags=["Binance"])
 def get_historical_candles_binance(symbol: str, interval: str):
     """
     Get the historical candlesticks from Binance of a symbol in an interval. Ex.: (BTCUSDT, 1h)
@@ -59,7 +59,7 @@ def get_historical_candles_binance(symbol: str, interval: str):
         raise HTTPException(status_code=500, detail="Failed to fetch historical candlesticks.")
     return candles
 
-@app.get("/cryptobot/price/binance")
+@app.get("/cryptobot/price/binance", tags=["Binance"])
 def get_bid_ask_binance(symbol: str):
     """
     Get the price of the Bid and Ask from a symbol in Binance. Ex.: (BTCUSDT)
@@ -69,7 +69,7 @@ def get_bid_ask_binance(symbol: str):
         raise HTTPException(status_code=500, detail="Failed to fetch bid/ask prices.")
     return bid_ask
 
-@app.get("/cryptobot/get_balance/binance")
+@app.get("/cryptobot/get_balance/binance", tags=["Binance"])
 def get_balances_binance():
     """
     Get the balance from Binance
@@ -79,7 +79,7 @@ def get_balances_binance():
         raise HTTPException(status_code=500, detail="Failed to get balances.")
     return balance
 
-@app.post("/cryptobot/place_order/binance")
+@app.post("/cryptobot/place_order/binance", tags=["Binance"])
 def place_order_binance(symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
     """
     Place an order in Binance
@@ -89,7 +89,7 @@ def place_order_binance(symbol: str, side: str, quantity: float, order_type: str
         raise HTTPException(status_code=500, detail="Failed to place order.")
     return order
 
-@app.delete("/cryptobot/cancel_order/binance")
+@app.delete("/cryptobot/cancel_order/binance", tags=["Binance"])
 def cancel_order_binance(symbol: str, order_id: str):
     """
     Cancel an order in Binance
@@ -99,7 +99,7 @@ def cancel_order_binance(symbol: str, order_id: str):
         raise HTTPException(status_code=500, detail=f"Failed to cancel the order {order_id}.")
     return canceled_order
 
-@app.get("/cryptobot/order_status/binance")
+@app.get("/cryptobot/order_status/binance", tags=["Binance"])
 def get_order_status_binance(symbol, order_id):
     """
     Get the order status in Binance
