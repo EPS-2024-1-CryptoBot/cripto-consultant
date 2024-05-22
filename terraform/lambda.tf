@@ -11,6 +11,8 @@ resource "aws_lambda_function" "terraform_lambda_func" {
 
     environment {
         variables = {
+            COIN_GECKO_API_KEY = var.COIN_GECKO_API_KEY
+            COIN_GECKO_API_URL = var.COIN_GECKO_API_URL
         }
     }
 }

@@ -2,10 +2,13 @@ import logging
 
 import connectors.bitmex
 from connectors.binance_futures import BinanceFuturesClient
+from crypto_currency import router as crypto_currency_router
 from fastapi import FastAPI, HTTPException, Query
 from mangum import Mangum
 
 app = FastAPI()
+app.include_router(crypto_currency_router, prefix="/crypto_currency")
+
 handler = Mangum(app)
 binance = BinanceFuturesClient("8d0922c254c066f9325a2dc6acdb82ccbd1c108cdcd0d1fa9e2a193deef06892", 
                                 "a86579e0a1ef79d25380986ba179edb44f821bf3165fd99b0dcaff5deb963e55", 
