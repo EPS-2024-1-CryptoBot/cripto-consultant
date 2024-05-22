@@ -7,7 +7,9 @@ from mangum import Mangum
 
 app = FastAPI()
 handler = Mangum(app)
-binance = BinanceFuturesClient(True)
+binance = BinanceFuturesClient("8d0922c254c066f9325a2dc6acdb82ccbd1c108cdcd0d1fa9e2a193deef06892", 
+                                "a86579e0a1ef79d25380986ba179edb44f821bf3165fd99b0dcaff5deb963e55", 
+                                True)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -56,8 +58,8 @@ def get_historical_candles_binance(symbol: str, interval: str):
     if candles is None:
         raise HTTPException(status_code=500, detail="Failed to fetch historical candlesticks.")
     return candles
-c
-@app.get("/cryptobot/prices/binance")
+
+@app.get("/cryptobot/price/binance")
 def get_bid_ask_binance(symbol: str):
     """
     Get the price of the Bid and Ask from a symbol in Binance. Ex.: (BTCUSDT)
@@ -66,6 +68,47 @@ def get_bid_ask_binance(symbol: str):
     if bid_ask is None:
         raise HTTPException(status_code=500, detail="Failed to fetch bid/ask prices.")
     return bid_ask
+
+@app.get("/cryptobot/get_balance/binance")
+def get_balances_binance():
+    """
+    Get the balance from Binance
+    """
+    balance = binance.get_balances()
+    if balance is None:
+        raise HTTPException(status_code=500, detail="Failed to get balances.")
+    return balance
+
+@app.post("/cryptobot/place_order/binance")
+def place_order_binance(symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
+    """
+    Place an order in Binance
+    """
+    order = binance.place_order(symbol, side, quantity, order_type, price, tif)
+    if order is None:
+        raise HTTPException(status_code=500, detail="Failed to place order.")
+    return order
+
+@app.delete("/cryptobot/cancel_order/binance")
+def cancel_order_binance(symbol: str, order_id: str):
+    """
+    Cancel an order in Binance
+    """
+    canceled_order = binance.cancel_order(symbol, order_id)
+    if canceled_order is None:
+        raise HTTPException(status_code=500, detail=f"Failed to cancel the order {order_id}.")
+    return canceled_order
+
+@app.get("/cryptobot/order_status/binance")
+def get_order_status_binance(symbol, order_id):
+    """
+    Get the order status in Binance
+    """
+    order_status = binance.get_order_status(symbol, order_id)
+    if order_status is None:
+        raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
+    return order_status
+
 
 if __name__ == "__main__":
     import uvicorn
