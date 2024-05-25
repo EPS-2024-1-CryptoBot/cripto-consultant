@@ -1,18 +1,15 @@
 import logging
 
-import connectors.bitmex
 from connectors.binance_futures import BinanceFuturesClient
-from crypto_currency import router as crypto_currency_router
+from connectors.bitmex import BitmexClient
 from fastapi import FastAPI, HTTPException, Query
 from mangum import Mangum
 
 app = FastAPI()
-app.include_router(crypto_currency_router, prefix="/crypto_currency")
-
 handler = Mangum(app)
-binance = BinanceFuturesClient("8d0922c254c066f9325a2dc6acdb82ccbd1c108cdcd0d1fa9e2a193deef06892", 
-                                "a86579e0a1ef79d25380986ba179edb44f821bf3165fd99b0dcaff5deb963e55", 
-                                True)
+
+binance = BinanceFuturesClient("API_KEY", "SECRET_KEY", True)
+bitmex = BitmexClient("API_KEY", "SECRET_KEY", True)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -37,19 +34,37 @@ def read_root():
     """
     return {"ConsultantAPI": "CryptoBot_UnB_2024.1"}
 
+################################################################################# Endpoints para Bitmex
 @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
 def get_contracts_list_bitmex():
     """
     Get all the active contracts from Bitmex
     """
-    return connectors.bitmex.get_contracts()
+    contracts = bitmex.get_contracts()
+    if contracts is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch contracts from Bitmex.")
+    return contracts
 
+@app.get("/cryptobot/get_balance/bitmex", tags=["Bitmex"])
+def get_balances_bitmex():
+    """
+    Get the balance from Bitmex
+    """
+    balance = bitmex.get_balances()
+    if balance is None:
+        raise HTTPException(status_code=500, detail="Failed to get balances from Bitmex.")
+    return balance
+
+################################################################################# Endpoints para Binance
 @app.get("/cryptobot/contracts/binance", tags=["Binance"])
 def get_contracts_list_binance():
     """
     Get all the contracts from Binance
     """
-    return binance.get_contracts()
+    contracts = binance.get_contracts()
+    if contracts is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch contracts from Binance.")
+    return contracts
 
 @app.get("/cryptobot/candlesticks/binance", tags=["Binance"])
 def get_historical_candles_binance(symbol: str, interval: str):
@@ -79,7 +94,7 @@ def get_balances_binance():
     """
     balance = binance.get_balances()
     if balance is None:
-        raise HTTPException(status_code=500, detail="Failed to get balances.")
+        raise HTTPException(status_code=500, detail="Failed to get balances from Binance.")
     return balance
 
 @app.post("/cryptobot/place_order/binance", tags=["Binance"])

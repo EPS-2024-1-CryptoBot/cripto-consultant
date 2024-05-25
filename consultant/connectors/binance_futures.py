@@ -16,7 +16,6 @@ logger = logging.getLogger()
 REQUEST_ERROR_MSG = "Connection error while making %s request to %s: %s"
 ORDER_ENDPOINT = "/fapi/v1/order"
 
-
 class BinanceFuturesClient:
     def __init__(self, public_key: str, secret_key: str, testnet: bool):
         if testnet:
