@@ -55,6 +55,56 @@ def get_balances_bitmex():
         raise HTTPException(status_code=500, detail="Failed to get balances from Bitmex.")
     return balance
 
+@app.get("/cryptobot/candlesticks/bitmex", tags=["Bitmex"])
+def get_historical_candles_bitmex(symbol: str, interval: str):
+    """
+    Get the historical candlesticks from Bitmex of a symbol in an interval.
+    """
+    candles = bitmex.get_historical_candles(symbol, interval)
+    if candles is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch historical candlesticks.")
+    return candles
+
+@app.get("/cryptobot/price/bitmex", tags=["Bitmex"])
+def get_bid_ask_bitmex(symbol: str):
+    """
+    Get the price of the Bid and Ask from a symbol in Bitmex. Ex.: (BTCUSD)
+    """
+    bid_ask = bitmex.get_bid_ask(symbol)
+    if bid_ask is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch bid/ask prices.")
+    return bid_ask
+
+@app.post("/cryptobot/place_order/bitmex", tags=["Bitmex"])
+def place_order_bitmex(symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
+    """
+    Place an order in Bitmex
+    """
+    order = bitmex.place_order(symbol, side, quantity, order_type, price, tif)
+    if order is None:
+        raise HTTPException(status_code=500, detail="Failed to place order.")
+    return order
+
+@app.delete("/cryptobot/cancel_order/bitmex", tags=["Bitmex"])
+def cancel_order_bitmex(symbol: str, order_id: str):
+    """
+    Cancel an order in Bitmex
+    """
+    canceled_order = bitmex.cancel_order(symbol, order_id)
+    if canceled_order is None:
+        raise HTTPException(status_code=500, detail=f"Failed to cancel the order {order_id}.")
+    return canceled_order
+
+@app.get("/cryptobot/order_status/bitmex", tags=["Bitmex"])
+def get_order_status_bitmex(symbol, order_id):
+    """
+    Get the order status in Bitmex
+    """
+    order_status = bitmex.get_order_status(symbol, order_id)
+    if order_status is None:
+        raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
+    return order_status
+
 ################################################################################# Endpoints para Binance
 @app.get("/cryptobot/contracts/binance", tags=["Binance"])
 def get_contracts_list_binance():
