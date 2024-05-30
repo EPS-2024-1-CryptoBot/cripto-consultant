@@ -1,6 +1,6 @@
 import logging
 
-from connectors.binance_futures import BinanceFuturesClient
+from connectors.binance import BinanceClient
 from connectors.bitmex import BitmexClient
 from fastapi import FastAPI, HTTPException, Query
 from mangum import Mangum
@@ -8,8 +8,8 @@ from mangum import Mangum
 app = FastAPI()
 handler = Mangum(app)
 
-binance = BinanceFuturesClient("API_KEY", "SECRET_KEY", True)
-bitmex = BitmexClient("API_KEY", "SECRET_KEY", True)
+binance = BinanceClient("", "", True)
+bitmex = BitmexClient("", "", True)
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -25,7 +25,6 @@ file_handler.setLevel(logging.DEBUG)
 
 logger.addHandler(stream_handler)
 logger.addHandler(file_handler)
-
 
 @app.get("/", tags=["Root"])
 def read_root():
