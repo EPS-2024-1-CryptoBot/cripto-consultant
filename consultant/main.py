@@ -1,8 +1,9 @@
 import logging
+import os
 
 from connectors.binance import BinanceClient
 from connectors.bitmex import BitmexClient
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException
 from mangum import Mangum
 
 app = FastAPI()
@@ -95,7 +96,7 @@ def cancel_order_bitmex(symbol: str, order_id: str):
     return canceled_order
 
 @app.get("/cryptobot/order_status/bitmex", tags=["Bitmex"])
-def get_order_status_bitmex(symbol, order_id):
+def get_order_status_bitmex(symbol: str, order_id: str):
     """
     Get the order status in Bitmex
     """
@@ -167,7 +168,7 @@ def cancel_order_binance(symbol: str, order_id: str):
     return canceled_order
 
 @app.get("/cryptobot/order_status/binance", tags=["Binance"])
-def get_order_status_binance(symbol, order_id):
+def get_order_status_binance(symbol: str, order_id: str):
     """
     Get the order status in Binance
     """
@@ -176,6 +177,7 @@ def get_order_status_binance(symbol, order_id):
         raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
     return order_status
 
+################################################################################# Endpoint para logs
 
 if __name__ == "__main__":
     import uvicorn
