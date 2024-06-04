@@ -33,8 +33,8 @@ def read_root():
 
 @app.get("/get_keys_binance", tags=["Binance"])
 def get_keys_binance(api_key: str, secret_key: str):
-    keys = {"api_key": api_key, "secret_key": secret_key}
-    return keys
+    binance_keys = {"api_key": api_key, "secret_key": secret_key}
+    return binance_keys
 
 ################################################################################# Endpoints para Bitmex
 # @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])

@@ -292,7 +292,7 @@ class TechnicalStrategy(Strategy):
         ema_fast = closes.ewm(span=self._ema_fast).mean()  # Exponential Moving Average method
         ema_slow = closes.ewm(span=self._ema_slow).mean()
 
-        macd_line = ema_fast - ema_slow
+        macd_line = pd.Series(ema_fast) - pd.Series(ema_slow)
         macd_signal = macd_line.ewm(span=self._ema_signal).mean()
 
         return macd_line.iloc[-2], macd_signal.iloc[-2]
@@ -365,14 +365,5 @@ class BreakoutStrategy(Strategy):
 
             if signal_result in [1, -1]:
                 self._open_position(signal_result)
-
-
-
-
-
-
-
-
-
 
 
