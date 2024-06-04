@@ -31,7 +31,7 @@ def read_root():
     """
     return {"ConsultantAPI": "CryptoBot_UnB_2024.1"}
 
-@app.get("/get_keys_binance")
+@app.get("/get_keys_binance", tags=["Binance"])
 def get_keys_binance(api_key: str, secret_key: str):
     keys = {"api_key": api_key, "secret_key": secret_key}
     return keys
