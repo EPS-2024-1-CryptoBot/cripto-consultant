@@ -62,14 +62,14 @@ class BinanceClient:
 
         self.logs = []
 
-        self._ws_id = 1
-        self.ws: websocket.WebSocketApp
-        self.reconnect = True
-        self.ws_connected = False
-        self.ws_subscriptions = {"bookTicker": [], "aggTrade": []}
+        # self._ws_id = 1
+        # self.ws: websocket.WebSocketApp
+        # self.reconnect = True
+        # self.ws_connected = False
+        # self.ws_subscriptions = {"bookTicker": [], "aggTrade": []}
 
-        t = threading.Thread(target=self._start_ws)
-        t.start()
+        # t = threading.Thread(target=self._start_ws)
+        # t.start()
 
         logger.info("Binance Futures Client successfully initialized")
 
