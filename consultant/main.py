@@ -1,8 +1,8 @@
 import logging
 import os
 
-from connectors.binance import BinanceClient
-from connectors.bitmex import BitmexClient
+from binance import BinanceClient
+from bitmex import BitmexClient
 from fastapi import FastAPI, HTTPException
 from mangum import Mangum
 

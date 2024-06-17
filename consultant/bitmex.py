@@ -12,7 +12,7 @@ import dateutil.parser
 import requests
 import websocket
 from models import Balance, Candle, Contract, OrderStatus
-from strategies.strategies import BreakoutStrategy, TechnicalStrategy
+from strategies import BreakoutStrategy, TechnicalStrategy
 
 logger = logging.getLogger()
 

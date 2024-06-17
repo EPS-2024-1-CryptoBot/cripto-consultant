@@ -2,14 +2,14 @@ import json
 import tkinter as tk
 import typing
 
-from connectors.binance import BinanceClient
-from connectors.bitmex import BitmexClient
 from database import WorkspaceData
 from interface.scrollable_frame import ScrollableFrame
 from interface.styling import (BG_COLOR, BG_COLOR_2, BOLD_FONT, FG_COLOR,
                                GLOBAL_FONT)
-from strategies.strategies import BreakoutStrategy, TechnicalStrategy
 
+from consultant.binance import BinanceClient
+from consultant.bitmex import BitmexClient
+from consultant.strategies import BreakoutStrategy, TechnicalStrategy
 from consultant.utils import check_float_format, check_integer_format
 
 if typing.TYPE_CHECKING:

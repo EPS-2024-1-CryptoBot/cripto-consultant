@@ -7,8 +7,8 @@ import pandas as pd
 from models import Candle, Contract, Trade
 
 if TYPE_CHECKING:  # Import the connector class names only for typing purpose (the classes aren't actually imported)
-    from connectors.binance import BinanceClient
-    from connectors.bitmex import BitmexClient
+    from consultant.binance import BinanceClient
+    from consultant.bitmex import BitmexClient
 
 logger = logging.getLogger()
 
