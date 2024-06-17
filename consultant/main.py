@@ -5,6 +5,8 @@ from connectors.binance import BinanceClient
 from connectors.bitmex import BitmexClient
 from fastapi import FastAPI, HTTPException
 from mangum import Mangum
+from crypto_currency import router as crypto_router
+
 
 app = FastAPI()
 handler = Mangum(app)
@@ -35,6 +37,8 @@ def read_root():
 def get_keys_binance(api_key: str, secret_key: str):
     binance_keys = {"api_key": api_key, "secret_key": secret_key}
     return binance_keys
+
+app.include_router(crypto_router)
 
 ################################################################################# Endpoints para Bitmex
 # @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
