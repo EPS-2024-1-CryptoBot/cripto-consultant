@@ -3,10 +3,9 @@ import os
 
 from binance import BinanceClient
 from bitmex import BitmexClient
+from crypto_currency import router as crypto_router
 from fastapi import FastAPI, HTTPException
 from mangum import Mangum
-from crypto_currency import router as crypto_router
-
 
 app = FastAPI()
 handler = Mangum(app)
@@ -38,78 +37,97 @@ def get_keys_binance(api_key: str, secret_key: str):
     binance_keys = {"api_key": api_key, "secret_key": secret_key}
     return binance_keys
 
+@app.get("/get_keys_bitmex", tags=["Bitmex"])
+def get_keys_bitmex(api_key: str, secret_key: str):
+    bitmex_keys = {"api_key": api_key, "secret_key": secret_key}
+    return bitmex_keys
+
 app.include_router(crypto_router)
 
 ################################################################################# Endpoints para Bitmex
-# @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
-# def get_contracts_list_bitmex():
-#     """
-#     Get all the active contracts from Bitmex
-#     """
-#     contracts = bitmex.get_contracts()
-#     if contracts is None:
-#         raise HTTPException(status_code=500, detail="Failed to fetch contracts from Bitmex.")
-#     return contracts
+@app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
+def get_contracts_list_bitmex(api_key: str, secret_key: str):
+    """
+    Get all the active contracts from Bitmex
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
 
-# @app.get("/cryptobot/get_balance/bitmex", tags=["Bitmex"])
-# def get_balances_bitmex():
-#     """
-#     Get the balance from Bitmex
-#     """
-#     balance = bitmex.get_balances()
-#     if balance is None:
-#         raise HTTPException(status_code=500, detail="Failed to get balances from Bitmex.")
-#     return balance
+    contracts = bitmex.get_contracts()
+    if contracts is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch contracts from Bitmex.")
+    return contracts
 
-# @app.get("/cryptobot/candlesticks/bitmex", tags=["Bitmex"])
-# def get_historical_candles_bitmex(symbol: str, interval: str):
-#     """
-#     Get the historical candlesticks from Bitmex of a symbol in an interval.
-#     """
-#     candles = bitmex.get_historical_candles(symbol, interval)
-#     if candles is None:
-#         raise HTTPException(status_code=500, detail="Failed to fetch historical candlesticks.")
-#     return candles
+@app.get("/cryptobot/get_balance/bitmex", tags=["Bitmex"])
+def get_balances_bitmex(api_key: str, secret_key: str):
+    """
+    Get the balance from Bitmex
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
 
-# @app.get("/cryptobot/price/bitmex", tags=["Bitmex"])
-# def get_bid_ask_bitmex(symbol: str):
-#     """
-#     Get the price of the Bid and Ask from a symbol in Bitmex. Ex.: (BTCUSD)
-#     """
-#     bid_ask = bitmex.get_bid_ask(symbol)
-#     if bid_ask is None:
-#         raise HTTPException(status_code=500, detail="Failed to fetch bid/ask prices.")
-#     return bid_ask
+    balance = bitmex.get_balances()
+    if balance is None:
+        raise HTTPException(status_code=500, detail="Failed to get balances from Bitmex.")
+    return balance
 
-# @app.post("/cryptobot/place_order/bitmex", tags=["Bitmex"])
-# def place_order_bitmex(symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
-#     """
-#     Place an order in Bitmex
-#     """
-#     order = bitmex.place_order(symbol, side, quantity, order_type, price, tif)
-#     if order is None:
-#         raise HTTPException(status_code=500, detail="Failed to place order.")
-#     return order
+@app.get("/cryptobot/candlesticks/bitmex", tags=["Bitmex"])
+def get_historical_candles_bitmex(api_key: str, secret_key: str, symbol: str, interval: str):
+    """
+    Get the historical candlesticks from Bitmex of a symbol in an interval.
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
 
-# @app.delete("/cryptobot/cancel_order/bitmex", tags=["Bitmex"])
-# def cancel_order_bitmex(symbol: str, order_id: str):
-#     """
-#     Cancel an order in Bitmex
-#     """
-#     canceled_order = bitmex.cancel_order(symbol, order_id)
-#     if canceled_order is None:
-#         raise HTTPException(status_code=500, detail=f"Failed to cancel the order {order_id}.")
-#     return canceled_order
+    candles = bitmex.get_historical_candles(symbol, interval)
+    if candles is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch historical candlesticks.")
+    return candles
 
-# @app.get("/cryptobot/order_status/bitmex", tags=["Bitmex"])
-# def get_order_status_bitmex(symbol: str, order_id: str):
-#     """
-#     Get the order status in Bitmex
-#     """
-#     order_status = bitmex.get_order_status(symbol, order_id)
-#     if order_status is None:
-#         raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
-#     return order_status
+@app.get("/cryptobot/price/bitmex", tags=["Bitmex"])
+def get_bid_ask_bitmex(api_key: str, secret_key: str, symbol: str):
+    """
+    Get the price of the Bid and Ask from a symbol in Bitmex. Ex.: (BTCUSD)
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
+    
+    bid_ask = bitmex.get_bid_ask(symbol)
+    if bid_ask is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch bid/ask prices.")
+    return bid_ask
+
+@app.post("/cryptobot/place_order/bitmex", tags=["Bitmex"])
+def place_order_bitmex(api_key: str, secret_key: str, symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
+    """
+    Place an order in Bitmex
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
+
+    order = bitmex.place_order(symbol, side, quantity, order_type, price, tif)
+    if order is None:
+        raise HTTPException(status_code=500, detail="Failed to place order.")
+    return order
+
+@app.delete("/cryptobot/cancel_order/bitmex", tags=["Bitmex"])
+def cancel_order_bitmex(api_key: str, secret_key: str, symbol: str, order_id: str):
+    """
+    Cancel an order in Bitmex
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
+
+    canceled_order = bitmex.cancel_order(order_id)
+    if canceled_order is None:
+        raise HTTPException(status_code=500, detail=f"Failed to cancel the order {order_id}.")
+    return canceled_order
+
+@app.get("/cryptobot/order_status/bitmex", tags=["Bitmex"])
+def get_order_status_bitmex(api_key: str, secret_key: str, symbol: str, order_id: str):
+    """
+    Get the order status in Bitmex
+    """
+    bitmex = BitmexClient(api_key, secret_key, True)
+
+    order_status = bitmex.get_order_status(symbol, order_id)
+    if order_status is None:
+        raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
+    return order_status
 
 ################################################################################# Endpoints para Binance
 @app.get("/cryptobot/contracts/binance", tags=["Binance"])
