@@ -181,7 +181,7 @@ class BinanceClient:
 
         return candles
 
-    def get_bid_ask(self, contract: Contract) -> typing.Dict[str, float]:
+    def get_bid_ask(self, contract: str) -> typing.Dict[str, float]:
 
         """
         Get a snapshot of the current bid and ask price for a symbol/contract, to be sure there is something
@@ -191,7 +191,7 @@ class BinanceClient:
         """
 
         data = dict()
-        data['symbol'] = contract.symbol
+        data['symbol'] = contract
 
         if self.futures:
             ob_data = self._make_request("GET", "/fapi/v1/ticker/bookTicker", data)
@@ -199,13 +199,13 @@ class BinanceClient:
             ob_data = self._make_request("GET", "/api/v3/ticker/bookTicker", data)
 
         if ob_data is not None:
-            if contract.symbol not in self.prices:  # Add the symbol to the dictionary if needed
-                self.prices[contract.symbol] = {'bid': float(ob_data['bidPrice']), 'ask': float(ob_data['askPrice'])}
+            if contract not in self.prices:  # Add the symbol to the dictionary if needed
+                self.prices[contract] = {'bid': float(ob_data['bidPrice']), 'ask': float(ob_data['askPrice'])}
             else:
-                self.prices[contract.symbol]['bid'] = float(ob_data['bidPrice'])
-                self.prices[contract.symbol]['ask'] = float(ob_data['askPrice'])
+                self.prices[contract]['bid'] = float(ob_data['bidPrice'])
+                self.prices[contract]['ask'] = float(ob_data['askPrice'])
 
-            return self.prices[contract.symbol]
+            return self.prices[contract]
 
     def get_balances(self) -> typing.Dict[str, Balance]:
 
