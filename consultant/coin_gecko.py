@@ -44,7 +44,7 @@ def get_coin_simple_price(coin_id):
     Get the current price of a coin in USD
     This endpoint accept array of ids in a single request, for the MVP we are going to use only one id
     """
-    response = build_gecko_request("get", f"/simple/price?ids={coin_id}&vs_currencies=brl&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true&precision=0")
+    response = build_gecko_request("get", f"/simple/price?ids={coin_id}&vs_currencies=brl&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true&precision=2")
     return response.json()
 
 def get_coin_chart_data_with_timestamp(coin_id):
