@@ -12,11 +12,8 @@ env:
   AWS_REGION: ${{ vars.AWS_DEFAULT_REGION }}
   COIN_GECKO_API_KEY: ${{ secrets.COIN_GECKO_API_KEY }}
   COIN_GECKO_API_URL: ${{ secrets.COIN_GECKO_API_URL }}
-  PG_USER: ${{ secrets.PG_USER }}
-  PG_PASS: ${{ secrets.PG_PASS }}
-  PG_HOST: ${{ secrets.PG_HOST }}
-  PG_DB: ${{ secrets.PG_DB }}
   DB_URL: ${{ secrets.DB_URL }}
+  DB_SCHEMA: ${{ vars.DB_SCHEMA}}
 
 jobs:
   deploy:
@@ -57,12 +54,8 @@ jobs:
             TF_VAR_environment: prod
             TF_VAR_COIN_GECKO_API_KEY: ${{ env.COIN_GECKO_API_KEY }}
             TF_VAR_COIN_GECKO_API_URL: ${{ env.COIN_GECKO_API_URL }}
-            TF_VAR_PG_USER: ${{ env.PG_USER }}
-            TF_VAR_PG_PASS: ${{ env.PG_PASS }}
-            TF_VAR_PG_HOST: ${{ env.PG_HOST }}
-            TF_VAR_PG_DB: ${{ env.PG_DB }}
             TF_VAR_DB_URL: ${{ env.DB_URL }}
-            TF_VAR_PG_SSL: True
+            TF_VAR_DB_SCHEMA: ${{ env.DB_SCHEMA }}
         run: |
           make tf-init
           make tf-apply

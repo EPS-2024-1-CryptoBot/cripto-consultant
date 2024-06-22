@@ -13,11 +13,8 @@ resource "aws_lambda_function" "terraform_lambda_func" {
         variables = {
             COIN_GECKO_API_KEY = var.COIN_GECKO_API_KEY
             COIN_GECKO_API_URL = var.COIN_GECKO_API_URL
-            PG_USER = var.PG_USER
-            PG_PASS = var.PG_PASS
-            PG_HOST = var.PG_HOST
-            PG_DB = var.PG_DB
             DB_URL = var.DB_URL
+            DB_SCHEMA = var.DB_SCHEMA
         }
     }
 }

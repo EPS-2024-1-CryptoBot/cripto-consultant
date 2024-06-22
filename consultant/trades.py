@@ -1,20 +1,17 @@
-from sqlalchemy import create_engine, Column, String, Float, Integer, Time, Enum, DateTime
+from sqlalchemy import create_engine, Column, String, Float, Enum, DateTime
 from sqlalchemy.sql import func # https://stackoverflow.com/questions/13370317/sqlalchemy-default-datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
+from sqlalchemy import text
 import enum
 import os
 
 Base = declarative_base()
+schema = os.environ.get('DB_SCHEMA')
 
 class StrategyType(enum.Enum):
     TECHNICAL = 'Technical'
     BREAKOUT = 'Breakout'
-
-    def __str__(self) -> str:
-        return self.value
     
 class TimeFrameType(enum.Enum):
     ONE_MINUTE = '1m'
@@ -27,18 +24,15 @@ class PlatformType(enum.Enum):
     BINANCE = 'Binance'
     BITMEX = 'Bitmex'
 
-    def __str__(self) -> str:
-        return self.value
-
 class Trade(Base):
     __tablename__ = 'trades'
-    __table_args__ = {"schema": "trades"}
+    __table_args__ = {"schema": schema}
 
     id = Column(String, primary_key=True, unique=True, nullable=False)
-    platform = Column(Enum(PlatformType), nullable=False)
+    platform = Column(String, nullable=False)
     api_key = Column(String, nullable=False)
     secret_key = Column(String, nullable=False)
-    strategy = Column(Enum(StrategyType), nullable=False)
+    strategy = Column(String, nullable=False)
     coin = Column(String, nullable=False)
     timeframe = Column(String, nullable=False)
     balance = Column(Float, nullable=False)
@@ -51,31 +45,15 @@ class Trade(Base):
     minimum_volume = Column(Float, nullable=True)
     last_execution = Column(DateTime(timezone=True), server_default=func.now())
 
-# Create an engine
 engine = create_engine(os.environ.get('DB_URL'))
-# # Create all tables
+
+schema_creation = text(f"CREATE SCHEMA IF NOT EXISTS {schema};")
+with engine.connect() as conn:
+    conn.execute(schema_creation)
+    conn.commit()
+
+Base.metadata.schema = schema
 Base.metadata.create_all(engine)
 
-
-# # Create a configured "Session" class
 Session = sessionmaker(bind=engine)
-
-# # Create a Session
 session = Session()
-
-# # Add a new trade
-# new_trade = Trade(
-#     time='12:00:00',  # Assuming 'time' is given in HH:MM:SS format
-#     exchange='Binance',
-#     strategy='Scalping',
-#     side='Buy',
-#     quantity=1.5,
-#     status='Open',
-#     pnl='+10%'
-# )
-
-# # Add the trade to the session
-# session.add(new_trade)
-
-# # Commit the transaction
-# session.commit()
