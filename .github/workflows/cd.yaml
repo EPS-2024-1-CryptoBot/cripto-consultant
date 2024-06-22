@@ -62,6 +62,7 @@ jobs:
             TF_VAR_PG_HOST: ${{ env.PG_HOST }}
             TF_VAR_PG_DB: ${{ env.PG_DB }}
             TF_VAR_DB_URL: ${{ env.DB_URL }}
+            TF_VAR_PG_SSL: True
         run: |
           make tf-init
           make tf-apply
