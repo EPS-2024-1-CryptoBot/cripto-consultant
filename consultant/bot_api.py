@@ -60,7 +60,7 @@ def get_trades():
 @router.delete("/trades/{trade_id}", tags=["Trades Database"])
 def delete_trade(trade_id):
     query = f"""
-        DELETE FROM trades WHERE id = '{trade_id}'
+        DELETE FROM {schema}trades WHERE id = '{trade_id}'
     """
     result = psql.select_query(f"SELECT * FROM {schema}trades WHERE id = '{trade_id}'")
     if len(result) == 0:
@@ -89,7 +89,7 @@ def update_trade(trade_id, trade: TradeBase):
     columns = [str(x) for x in trade.__dict__.keys()]
     values = [str(x) for x in trade.dict().values()]
     query = f"""
-        UPDATE trades SET {','.join([f"{columns[i]}={values[i]}" for i in range(len(columns))])} WHERE id = '{trade_id}'
+        UPDATE {schema}trades SET {','.join([f"{columns[i]}={values[i]}" for i in range(len(columns))])} WHERE id = '{trade_id}'
     """
     result = psql.select_query(f"SELECT * FROM {schema}trades WHERE id = '{trade_id}'")
     if len(result) == 0:
