@@ -52,5 +52,5 @@ def get_coin_chart_data_with_timestamp(coin_id):
     Get the market chart data (price, market cap, volume) of a coin in a specific date range
     For now leaving the default range of 3 weeks
     """
-    response = build_gecko_request("get", f"/coins/{coin_id}/market_chart/range?vs_currency=usd&from=1711929600&to=1712275200")
+    response = build_gecko_request("get", f"/coins/{coin_id}/market_chart/range?vs_currency=brl&from=1711929600&to=1712275200")
     return response.json()
