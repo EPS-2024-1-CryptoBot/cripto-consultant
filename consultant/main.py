@@ -5,6 +5,7 @@ from binance import BinanceClient
 from bitmex import BitmexClient
 from crypto_currency import router as crypto_router
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import PlainTextResponse
 from mangum import Mangum
 
 app = FastAPI()
@@ -32,6 +33,8 @@ def read_root():
     """
     return {"ConsultantAPI": "CryptoBot_UnB_2024.1"}
 
+################################################################################ API Keys
+
 @app.get("/get_keys_binance", tags=["Binance"])
 def get_keys_binance(api_key: str, secret_key: str):
     binance_keys = {"api_key": api_key, "secret_key": secret_key}
@@ -42,7 +45,28 @@ def get_keys_bitmex(api_key: str, secret_key: str):
     bitmex_keys = {"api_key": api_key, "secret_key": secret_key}
     return bitmex_keys
 
+################################################################################# Endpoints do CoinGecko
+
 app.include_router(crypto_router)
+
+################################################################################# Endpoints para Funcionamento do CryptoBot
+@app.get("/get_strategy", tags=["CryptoBot"])
+def get_strategy(strategy_id: str):
+    return
+
+@app.post("/add_strategy", tags=["CryptoBot"])
+def add_strategy(api_key: str, secret_key: str, exchange: str, strategy_name: str, contract_symbol: str, 
+                timeframe: str, balance_pct: float, take_profit: float, stop_loss: float):
+
+    return
+
+@app.delete("/delete_strategy", tags=["CryptoBot"])
+def delete_strategy(strategy_id: str):
+    return
+
+@app.put("/edit_strategy", tags=["CryptoBot"])
+def edit_strategy(api_key: str, secret_key: str, exchange: str, strategy_id: str, ):
+    return
 
 ################################################################################# Endpoints para Bitmex
 @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
@@ -217,6 +241,18 @@ def get_order_status_binance(api_key: str, secret_key: str, symbol: str, order_i
 
 ################################################################################# Endpoint para logs
 
+@app.get("/logs", tags=["Logs"], response_class=PlainTextResponse)
+def get_logs():
+    """
+    Retrieve the logs from the info.log file
+    """
+    log_file_path = '/tmp/info.log'
+    if os.path.exists(log_file_path):
+        with open(log_file_path, 'r') as file:
+            logs = file.read()
+        return logs
+    else:
+        raise HTTPException(status_code=404, detail="Log file not found.")
 
 if __name__ == "__main__":
     import uvicorn
