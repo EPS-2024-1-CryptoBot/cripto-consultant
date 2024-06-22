@@ -7,6 +7,8 @@ from crypto_currency import router as crypto_router
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
 from mangum import Mangum
+from bot_api import router as bot_router
+
 
 app = FastAPI()
 handler = Mangum(app)
@@ -67,6 +69,9 @@ def delete_strategy(strategy_id: str):
 @app.put("/edit_strategy", tags=["CryptoBot"])
 def edit_strategy(api_key: str, secret_key: str, exchange: str, strategy_id: str, ):
     return
+
+app.include_router(crypto_router)
+app.include_router(bot_router)
 
 ################################################################################# Endpoints para Bitmex
 @app.get("/cryptobot/contracts/bitmex", tags=["Bitmex"])
