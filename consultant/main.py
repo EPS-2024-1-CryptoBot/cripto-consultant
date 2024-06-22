@@ -47,7 +47,7 @@ def get_keys_bitmex(api_key: str, secret_key: str):
 
 ################################################################################# Endpoints do CoinGecko
 
-app.include_router(crypto_router)
+app.include_router(crypto_router, prefix="/crypto_currency")
 
 ################################################################################# Endpoints para Funcionamento do CryptoBot
 @app.get("/get_strategy", tags=["CryptoBot"])
