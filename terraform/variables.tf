@@ -14,3 +14,33 @@ variable "COIN_GECKO_API_URL" {
     type = string
     sensitive = false
 }
+
+variable "PG_USER" {
+    type = string
+    sensitive = true
+}
+
+variable "PG_PASS" {
+    type = string
+    sensitive = true
+}
+
+variable "PG_HOST" {
+    type = string
+    sensitive = true
+}
+
+variable "PG_DB" {
+    type = string
+    sensitive = true
+}
+
+variable "PG_SSL" {
+    type = string
+    sensitive = false
+}
+
+variable "DB_URL" {
+    type = string
+    sensitive = true
+}
