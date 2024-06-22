@@ -64,4 +64,4 @@ jobs:
             TF_DB_URL: ${{ env.DB_URL }}
         run: |
           make tf-init
-          make tf-apply
+          TF_DB_URL=$TF_DB_URL make tf-apply
