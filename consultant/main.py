@@ -215,7 +215,7 @@ def place_order_binance(api_key: str, secret_key: str, symbol: str, side: str, q
     """
     binance = BinanceClient(api_key, secret_key, True, True)
 
-    order = binance.place_order(symbol, side, quantity, order_type, price, tif)
+    order = binance.place_order(symbol,order_type , quantity,  side, price, tif)
     if order is None:
         raise HTTPException(status_code=500, detail="Failed to place order.")
     return order

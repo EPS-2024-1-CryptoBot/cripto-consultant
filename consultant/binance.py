@@ -12,6 +12,7 @@ import requests
 import websocket
 from models import Balance, Candle, Contract, OrderStatus
 from strategies import BreakoutStrategy, TechnicalStrategy
+from datetime import datetime, timedelta
 
 logger = logging.getLogger()
 
@@ -112,8 +113,9 @@ class BinanceClient:
                 return None
 
         elif method == "POST":
+            print('data entrou aqui nessa porra', data)
             try:
-                response = requests.post(self._base_url + endpoint, params=data, headers=self._headers)
+                response = requests.post(self._base_url + endpoint, data=data, headers=self._headers)
             except Exception as e:
                 logger.error(CONNECTION_ERROR_MSG, method, endpoint, e)
                 return None
@@ -235,7 +237,7 @@ class BinanceClient:
 
         return balances
 
-    def place_order(self, contract: Contract, order_type: str, quantity: float, side: str, price=None, tif=None) -> OrderStatus:
+    def place_order(self, symbol: str, order_type: str, quantity: float, side: str, price=None, tif=None) -> OrderStatus:
 
         """
         Place an order. Based on the order_type, the price and tif arguments are not required
@@ -249,10 +251,42 @@ class BinanceClient:
         """
 
         data = dict()
-        data['symbol'] = contract.symbol
+        contract = self.contracts[symbol]
+        data['symbol'] = symbol
         data['side'] = side.upper()
         data['quantity'] = round(int(quantity / contract.lot_size) * contract.lot_size, 8)  # int() to round down
         data['type'] = order_type.upper()  # Makes sure the order type is in uppercase
+        data['goodTillDate'] = int((datetime.now() + timedelta(seconds=1000)).timestamp() * 1000)
+        data['workingType'] = "CONTRACT_PRICE"
+        data['priceProtect'] = False
+        data['priceMatch'] = "NONE"
+        data['selfTradePreventionMode'] = "NONE"
+        data['reduceOnly'] = False
+        data['closePosition'] = False
+        data['positionSide'] = "BOTH"
+        data['callbackRate'] = 0.3
+        data['activatePrice'] = 1020
+
+
+        # "symbol": "BTCUSDT",
+    # "side": "BUY",
+    # "positionSide": "BOTH",
+    # "type": "TRAILING_STOP_MARKET",
+    # "timeInForce": "GTD",
+    # "quantity": 0.02,
+    # # "reduceOnly": False,
+    # "stopPrice": 3300,  # Ignored for TRAILING_STOP_MARKET
+    # "closePosition": False,
+    # "activatePrice": 1020,
+    # "callbackRate": 0.3,
+    # "workingType": "CONTRACT_PRICE",
+    # "priceProtect": False,
+    # "priceMatch": "NONE",
+    # "selfTradePreventionMode": "NONE",
+    # # "goodTillDate": 1693207680000,
+    # "goodTillDate": int((datetime.now() + timedelta(seconds=1000)).timestamp() * 1000),
+    # "timestamp": int(time.time() * 1000)
+
 
         if price is not None:
             data['price'] = round(round(price / contract.tick_size) * contract.tick_size, 8)
@@ -269,23 +303,13 @@ class BinanceClient:
         else:
             order_status = self._make_request("POST", ORDER_ENDPOINT_V3, data)
 
-        if order_status is not None:
-
-            if not self.futures:
-                if order_status['status'] == "FILLED":
-                    order_status['avgPrice'] = self._get_execution_price(contract, order_status['orderId'])
-                else:
-                    order_status['avgPrice'] = 0
-
-            order_status = OrderStatus(order_status, self.platform)
-
         return order_status
 
-    def cancel_order(self, contract: Contract, order_id: int) -> OrderStatus:
+    def cancel_order(self, symbol: str, order_id: int) -> OrderStatus:
 
         data = dict()
         data['orderId'] = order_id
-        data['symbol'] = contract.symbol
+        data['symbol'] = symbol
 
         data['timestamp'] = int(time.time() * 1000)
         data['signature'] = self._generate_signature(data)
@@ -296,14 +320,11 @@ class BinanceClient:
             order_status = self._make_request("DELETE", ORDER_ENDPOINT_V3, data)
 
         if order_status is not None:
-            if not self.futures:
-                # Get the average execution price based on the recent trades
-                order_status['avgPrice'] = self._get_execution_price(contract, order_id)
             order_status = OrderStatus(order_status, self.platform)
 
         return order_status
 
-    def _get_execution_price(self, contract: Contract, order_id: int) -> float:
+    def _get_execution_price(self, contract:Contract , order_id: int) -> float:
 
         """
         For Binance Spot only, find the equivalent of the 'avgPrice' key on the futures side.
@@ -336,11 +357,11 @@ class BinanceClient:
 
         return round(round(avg_price / contract.tick_size) * contract.tick_size, 8)
 
-    def get_order_status(self, contract: Contract, order_id: int) -> OrderStatus:
+    def get_order_status(self, symbol: str, order_id: int) -> OrderStatus:
 
         data = dict()
         data['timestamp'] = int(time.time() * 1000)
-        data['symbol'] = contract.symbol
+        data['symbol'] = symbol
         data['orderId'] = order_id
         data['signature'] = self._generate_signature(data)
 
@@ -348,15 +369,10 @@ class BinanceClient:
             order_status = self._make_request("GET", ORDER_ENDPOINT, data)
         else:
             order_status = self._make_request("GET", ORDER_ENDPOINT_V3, data)
+        
+
 
         if order_status is not None:
-            if not self.futures:
-                if order_status['status'] == "FILLED":
-                    # Get the average execution price based on the recent trades
-                    order_status['avgPrice'] = self._get_execution_price(contract, order_id)
-                else:
-                    order_status['avgPrice'] = 0
-
             order_status = OrderStatus(order_status, self.platform)
 
         return order_status

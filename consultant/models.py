@@ -120,6 +120,10 @@ class OrderStatus:
             self.status = order_info['status'].lower()
             self.avg_price = float(order_info['avgPrice'])
             self.executed_qty = float(order_info['executedQty'])
+            self.side = order_info['side']
+            self.type = order_info['type'].lower()
+            self.time = order_info['time']
+            self.update_time = order_info['updateTime']
         elif exchange == "bitmex":
             self.order_id = order_info['orderID']
             self.status = order_info['ordStatus'].lower()
