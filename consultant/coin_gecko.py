@@ -1,5 +1,7 @@
 import os
 import requests
+from datetime import datetime, timedelta
+import time
 
 """
 REFER TO THE COIN GECKO API DOCUMENTATION FOR MORE INFORMATION (V3.0.1)
@@ -52,5 +54,14 @@ def get_coin_chart_data_with_timestamp(coin_id):
     Get the market chart data (price, market cap, volume) of a coin in a specific date range
     For now leaving the default range of 3 weeks
     """
-    response = build_gecko_request("get", f"/coins/{coin_id}/market_chart/range?vs_currency=brl&from=1711929600&to=1712275200")
+    # Calculate the current date and the date 96 days ago
+    current_date = datetime.now()
+    date_96_days_ago = current_date - timedelta(days=96)
+
+    # Convert dates to UNIX timestamps
+    current_date_unix = int(time.mktime(current_date.timetuple()))
+    date_96_days_ago_unix = int(time.mktime(date_96_days_ago.timetuple()))
+
+    # Use the UNIX timestamps in the API request
+    response = build_gecko_request("get", f"/coins/{coin_id}/market_chart/range?vs_currency=brl&from={date_96_days_ago_unix}&to={current_date_unix}")
     return response.json()
