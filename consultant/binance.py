@@ -538,3 +538,18 @@ class BinanceClient:
         logger.info("Binance current %s balance = %s, trade size = %s", contract.quote_asset, balance, trade_size)
 
         return trade_size
+    
+    def get_all_orders(self):
+
+
+        data = dict()
+        
+        data['timestamp'] = int(time.time() * 1000)
+        data['signature'] = self._generate_signature(data)
+
+        if self.futures:
+            orders = self._make_request("GET", "/fapi/v1/allOrders", data)
+        else:
+            orders = self._make_request("GET", "/api/v3/allOrderList", data)
+
+        return orders

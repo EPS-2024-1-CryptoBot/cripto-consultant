@@ -244,6 +244,18 @@ def get_order_status_binance(api_key: str, secret_key: str, symbol: str, order_i
         raise HTTPException(status_code=500, detail=f"Failed to get the order {order_id} status.")
     return order_status
 
+@app.get("/cryptobot/orders/binance", tags=["Binance"])
+def get_contracts_list_binance(api_key: str, secret_key: str):
+    """
+    Get all the contracts from Binance
+    """
+    binance = BinanceClient(api_key, secret_key, True, True)
+
+    contracts = binance.get_all_orders()
+    if contracts is None:
+        raise HTTPException(status_code=500, detail="Failed to fetch contracts from Binance.")
+    return contracts
+
 ################################################################################# Endpoint para logs
 
 @app.get("/logs", tags=["Logs"], response_class=PlainTextResponse)
