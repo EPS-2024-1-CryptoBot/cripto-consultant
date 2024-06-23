@@ -10,8 +10,7 @@ from mangum import Mangum
 from bot_api import router as bot_router
 import tempfile
 
-temp_file = tempfile.NamedTemporaryFile(delete=True)
-temp_file_path = '/tmp/'+temp_file.name
+log_file = tempfile.mkstemp()
 
 
 app = FastAPI()
@@ -25,7 +24,7 @@ formatter = logging.Formatter('%(asctime)s %(levelname)s :: %(message)s')
 stream_handler.setFormatter(formatter)
 stream_handler.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler(temp_file_path)
+file_handler = logging.FileHandler(log_file)
 file_handler.setFormatter(formatter)
 file_handler.setLevel(logging.DEBUG)
 
@@ -267,7 +266,7 @@ def get_logs():
     """
     Retrieve the logs from the info.log file
     """
-    log_file_path = temp_file_path
+    log_file_path = log_file
     if os.path.exists(log_file_path):
         with open(log_file_path, 'r') as file:
             logs = file.read()
