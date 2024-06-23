@@ -10,7 +10,7 @@ from mangum import Mangum
 from bot_api import router as bot_router
 import tempfile
 
-log_file = tempfile.mkstemp(dir='/tmp',suffix='.log')[-1]
+log_file = tempfile.mkstemp(dir='/tmp',suffix='.log')[-1] # pragma: no cover
 
 
 app = FastAPI()
