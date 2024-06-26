@@ -23,7 +23,7 @@ help:
 install-dev:
 	pip install -r requirements.dev.txt
 run-dev:
-	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
+	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d consultant_api
 	docker exec -it consultant_api bash
 dev:
 	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
