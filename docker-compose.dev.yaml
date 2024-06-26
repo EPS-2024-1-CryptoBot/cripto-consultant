@@ -2,7 +2,7 @@ services:
 
   pgsql:
     image: postgres
-    container_name: postgres
+    container_name: postgres_new  # Renomeie o contêiner
     environment:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "cryptobot"

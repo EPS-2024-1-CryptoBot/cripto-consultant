@@ -55,23 +55,6 @@ def get_keys_bitmex(api_key: str, secret_key: str):
 app.include_router(crypto_router, prefix="/crypto_currency")
 
 ################################################################################# Endpoints para Funcionamento do CryptoBot
-@app.get("/get_strategy", tags=["CryptoBot"])
-def get_strategy(strategy_id: str):
-    return
-
-@app.post("/add_strategy", tags=["CryptoBot"])
-def add_strategy(api_key: str, secret_key: str, exchange: str, strategy_name: str, contract_symbol: str, 
-                timeframe: str, balance_pct: float, take_profit: float, stop_loss: float):
-
-    return
-
-@app.delete("/delete_strategy", tags=["CryptoBot"])
-def delete_strategy(strategy_id: str):
-    return
-
-@app.put("/edit_strategy", tags=["CryptoBot"])
-def edit_strategy(api_key: str, secret_key: str, exchange: str, strategy_id: str, ):
-    return
 
 app.include_router(bot_router)
 
@@ -211,7 +194,7 @@ def get_balances_binance(api_key: str, secret_key: str):
     return balance
 
 @app.post("/cryptobot/place_order/binance", tags=["Binance"])
-def place_order_binance(api_key: str, secret_key: str, symbol: str, side: str, quantity: float, order_type: str, price: float, tif: str):
+def place_order_binance(api_key: str, secret_key: str, symbol: str, side: str, quantity: float, order_type: str, price: None, tif: None):
     """
     Place an order in Binance
     """
