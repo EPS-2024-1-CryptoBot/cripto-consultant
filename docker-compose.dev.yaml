@@ -1,17 +1,5 @@
 services:
 
-  pgsql:
-    image: postgres
-    container_name: postgres
-    environment:
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "cryptobot"
-      POSTGRES_USER: "postgres"
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./pgdata:/var/lib/pgsql/data
-
   consultant_api:
     container_name: consultant_api
     build:
@@ -24,3 +12,10 @@ services:
     ports:
       - "8001:8001" #main.py
     tty: true
+    networks:
+      - pg-ext-net
+
+networks:
+  pg-ext-net:
+    external:
+      name: crypto-backend_pg-net

@@ -12,9 +12,24 @@ END = \033[0m
 help:
 	@echo "$(YELLOW)# ------------------- Makefile commands ------------------- #$(END)"
 	@echo ""
-	@echo "$(GREEN)@ DEV$(END)"	
-	@printf "$(CYAN)%-30b$(END) %b\n" "help:" "Shows this message."
-	@printf "$(CYAN)%-30b$(END) %b\n" "install-dev:" "Install the dev dependencies."
+	@echo "$(GREEN)## DEV$(END)"
+	@printf "$(CYAN)%-20s$(END) %b \n" "install-dev:" "Installs development dependencies"
+	@printf "$(CYAN)%-20s$(END) %b \n" "run-dev:" "Runs development Docker containers"
+	@printf "$(CYAN)%-20s$(END) %b \n" "dev:" "Builds and runs the development environment"
+	@echo ""
+
+	@echo "$(RED)## PROD$(END)"
+	@printf "$(CYAN)%-20s$(END) %b \n" "act:" "Runs GitHub actions workflows using 'act'"
+	@printf "$(CYAN)%-20s$(END) %b \n" "install-prod:" "Installs production dependencies"
+	@printf "$(CYAN)%-20s$(END) %b \n" "zip:" "Creates a zip archive for production deployment"
+	@echo ""
+
+	@echo "$(BLUE)## TERRAFORM$(END)"
+	@printf "$(CYAN)%-20s$(END) %b \n" "tf-init:" "Initializes Terraform in the 'terraform' directory"
+	@printf "$(CYAN)%-20s$(END) %b \n" "tf-plan:" "Runs Terraform plan in the 'terraform' directory"
+	@printf "$(CYAN)%-20s$(END) %b \n" "tf-apply:" "Applies Terraform changes in the 'terraform' directory"
+	@printf "$(CYAN)%-20s$(END) %b \n" "tf-apply-dev:" "Applies Terraform changes with dev environment specifics"
+	@echo ""
 
 
 ###########################################################
