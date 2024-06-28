@@ -41,6 +41,9 @@ run-dev:
 	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
 	docker exec -it consultant_api bash
 dev:
+	docker-compose --file docker-compose.dev.yaml up --force-recreate --build
+	docker exec -it consultant_api python main.py
+bigbang:
 	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
 	docker exec -it consultant_api python main.py
 
