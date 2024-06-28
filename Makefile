@@ -45,7 +45,7 @@ dev:
 	docker exec -it consultant_api python main.py
 bigbang:
 	docker-compose --file docker-compose.dev.yaml up --force-recreate --build -d
-	docker exec -it consultant_api python main.py
+	docker exec -d consultant_api python main.py
 
 ###########################################################
 # PROD
